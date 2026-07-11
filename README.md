@@ -92,8 +92,8 @@ Hound는 특정 앱에 묶이지 않은 이식 가능한 스킬입니다.
 
 - **Claude Code.** 네이티브 스킬로 그대로 작동합니다. 네이버 검색, 웹 검색, 페이지 열람, 브라우저,
   `yt-dlp`를 채널별 참조 문서대로 바꿔 가며 추적합니다.
-- **ChatGPT.** SKILL.md와 채널 참조 문서를 커스텀 GPT의 지침에 넣으면, ChatGPT의 웹 브라우징 위에서
-  같은 방식으로 작동합니다. 도구 이름만 그 환경의 검색과 브라우징 도구로 바꿔 읽으면 됩니다.
+- **ChatGPT Work.** SKILL.md와 채널 참조 문서를 ChatGPT Work의 지침에 넣으면, ChatGPT Work의 웹
+  브라우징 위에서 같은 방식으로 작동합니다. 도구 이름만 그 환경의 검색과 브라우징 도구로 바꿔 읽으면 됩니다.
 
 ## 찾지 못하면
 
@@ -147,15 +147,18 @@ hound/                         # 레포 루트
 ├── scripts/                   # 유튜브 집계 전용 (그 외 채널은 스크립트 불필요)
 │   ├── yt_collect.py
 │   └── yt_render.py
-└── assets/
-    ├── topic-packs.json
-    ├── template.html
-    ├── logo1-white.png
-    ├── hound-black.png
-    ├── hound_white.png
-    ├── thumbnail.svg
-    └── thumbnail.png
+├── assets/
+│   ├── topic-packs.json
+│   ├── template.html
+│   ├── logo1-white.png
+│   ├── hound_white.png
+│   ├── thumbnail.svg
+│   └── thumbnail.png
+└── output/                    # 검색 결과 저장 위치 (YYYYMMDD_NN/*.md)
 ```
+
+검색 결과는 `output/{오늘날짜}_{순번}/` 폴더에 마크다운으로 저장됩니다(예: `output/20260711_01/result.md`).
+같은 날 여러 번 실행하면 순번이 `01`, `02`로 늘어납니다.
 
 ## 라이선스
 
