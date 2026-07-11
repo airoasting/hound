@@ -107,17 +107,6 @@ Hound는 특정 앱에 묶이지 않은 이식 가능한 스킬입니다.
 - 출처로 확인되지 않은 사실이나 없는 URL, 없는 숫자를 지어내지 않습니다.
 - CAPTCHA와 봇 차단을 우회하지 않습니다.
 
-## 참고한 프로젝트
-
-Hound는 세 프로젝트의 핵심을 하나로 모았습니다.
-
-- [insane-search](https://github.com/fivetaku/insane-search). 막히면 포기하지 않고 단계를 올려
-  뚫는 방식입니다. Hound가 끝까지 추적하는 힘의 바탕입니다.
-- [Agent-Reach](https://github.com/Panniantong/Agent-Reach). 채널별 참조와 자동 전환입니다. 한
-  채널이 막히면 다음 채널로 옮겨 가는 라우터 구조입니다.
-- [brave-search-skills](https://github.com/brave/brave-search-skills). 채널 종류별 검색을
-  출처가 붙은 구조화된 결과로 회수하는 방식입니다.
-
 ## 파일 구성
 
 ```
@@ -159,6 +148,17 @@ hound/                         # 레포 루트
 
 검색 결과는 `output/{오늘날짜}_{순번}/` 폴더에 마크다운으로 저장됩니다(예: `output/20260711_01/result.md`).
 같은 날 여러 번 실행하면 순번이 `01`, `02`로 늘어납니다.
+
+## 참고한 프로젝트
+
+Hound는 세 프로젝트의 핵심을 하나로 모았습니다.
+
+- [insane-search](https://github.com/fivetaku/insane-search). 막히면 포기하지 않고 단계를 올려
+  뚫는 방식입니다. Hound가 끝까지 추적하는 힘의 바탕입니다.
+- [Agent-Reach](https://github.com/Panniantong/Agent-Reach). 채널별 참조와 자동 전환입니다. 한
+  채널이 막히면 다음 채널로 옮겨 가는 라우터 구조입니다.
+- [brave-search-skills](https://github.com/brave/brave-search-skills). 채널 종류별 검색을
+  출처가 붙은 구조화된 결과로 회수하는 방식입니다.
 
 ## 라이선스
 
