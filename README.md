@@ -150,6 +150,7 @@ hound/                         # 레포 루트
 └── assets/
     ├── topic-packs.json
     ├── template.html
+    ├── logo1-white.png
     ├── hound-black.png
     ├── hound_white.png
     ├── thumbnail.svg
