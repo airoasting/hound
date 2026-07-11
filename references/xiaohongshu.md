@@ -8,7 +8,7 @@
 1. **웹 검색.** `WebSearch`로 `site:xiaohongshu.com [키워드]`(중국어). 공개 노트가 잡힌다.
 2. **공개 노트 열기.** URL을 `WebFetch`/Jina Reader로 연다. 공개 게시물 본문·태그가 보인다.
 3. **실제 크롬 세션(정공법).** 검색·댓글·피드는 대부분 로그인을 요구한다. 사용자 허락 하에 실제 로그인된
-   크롬(claude-in-chrome)으로 **읽기만**. Agent-Reach의 OpenCLI/xiaohongshu-mcp 역할.
+   크롬(claude-in-chrome)으로 **읽기만** 한다.
 
 ## 요령 · 가드레일
 
