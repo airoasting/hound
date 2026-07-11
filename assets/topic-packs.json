@@ -1,0 +1,40 @@
+{
+  "_doc": "토픽 팩 정의. 새 주제를 추가하려면 이 파일에 키를 하나 더 넣으면 된다. collect.py가 --pack <키>로 읽는다. queries=검색어(다국어 권장), include=이 중 하나라도 제목/채널/설명에 있으면 관련 있음으로 통과, exclude=이게 있으면 관련 없음으로 제외(동음이의 컷). 매칭은 소문자 부분일치.",
+  "robot": {
+    "label": "로봇 / Robotics",
+    "queries": [
+      "humanoid robot",
+      "robot",
+      "robotics",
+      "AI robot",
+      "embodied AI robot",
+      "Boston Dynamics",
+      "Tesla Optimus",
+      "Figure robot",
+      "Unitree robot",
+      "robot dog",
+      "warehouse robot",
+      "surgical robot",
+      "로봇",
+      "휴머노이드 로봇",
+      "보스턴다이내믹스",
+      "옵티머스 로봇"
+    ],
+    "include": [
+      "robot", "robotic", "humanoid", "android", "cobot", "automaton",
+      "boston dynamics", "optimus", "figure ", "unitree", "agility", "sanctuary ai",
+      "atlas", "spot", "embodied", "actuator", "manipulation", "teleoperation",
+      "로봇", "휴머노이드", "보스턴다이내믹스", "옵티머스", "유니트리", "구동기", "이족보행"
+    ],
+    "exclude": [
+      "roblox", "mr. robot", "mr robot", "robot chicken", "robot rock",
+      "so you think", "lyrics", "dance tutorial", "gacha", "fortnite skin"
+    ]
+  },
+  "_example_new_topic": {
+    "label": "예시. 실제로는 이 키를 지우고 원하는 주제로 복제한다",
+    "queries": ["your search term", "다국어 검색어"],
+    "include": ["핵심어1", "핵심어2"],
+    "exclude": ["동음이의로 걸러낼 말"]
+  }
+}

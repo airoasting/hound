@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base target="_blank">
+<title>{{TITLE}}</title>
+<style>
+  :root{
+    --bg:#0f1115; --card:#171a21; --line:#262b36; --text:#e8eaed;
+    --muted:#9aa4b2; --accent:#ff5a5f; --accent2:#4da3ff; --gold:#f5c451;
+  }
+  @media (prefers-color-scheme: light){
+    :root{ --bg:#f6f7f9; --card:#ffffff; --line:#e6e8ec; --text:#1a1d23; --muted:#5b6472; }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;
+    line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:900px;margin:0 auto;padding:32px 20px 64px}
+  header h1{font-size:26px;margin:0 0 6px;letter-spacing:-.3px}
+  header .meta{color:var(--muted);font-size:13px}
+  header .meta b{color:var(--text)}
+  .method{margin:18px 0 26px;padding:12px 14px;background:var(--card);
+    border:1px solid var(--line);border-radius:10px;font-size:12.5px;color:var(--muted)}
+  .card{display:flex;gap:16px;padding:16px;margin:12px 0;background:var(--card);
+    border:1px solid var(--line);border-radius:14px;transition:border-color .15s}
+  .card:hover{border-color:var(--accent2)}
+  .rank{flex:0 0 40px;font-size:24px;font-weight:800;color:var(--muted);text-align:center;padding-top:2px}
+  .card:nth-child(-n+3) .rank{color:var(--gold)}
+  .thumb{flex:0 0 168px}
+  .thumb img{width:168px;height:94px;object-fit:cover;border-radius:8px;display:block;background:#000}
+  .body{flex:1;min-width:0}
+  .body h3{margin:0 0 6px;font-size:16px;line-height:1.35}
+  .body h3 a{color:var(--text);text-decoration:none}
+  .body h3 a:hover{color:var(--accent2)}
+  .chan{color:var(--muted);font-size:13px;margin-bottom:8px}
+  .stats{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+  .pill{font-size:11.5px;padding:2px 8px;border-radius:999px;background:var(--bg);
+    border:1px solid var(--line);color:var(--muted)}
+  .pill.v{color:var(--accent);border-color:var(--accent)}
+  .note{font-size:13.5px;color:var(--text);opacity:.92}
+  footer{margin-top:32px;color:var(--muted);font-size:12px;text-align:center}
+  @media (max-width:560px){ .card{flex-wrap:wrap} .thumb{flex-basis:100%} .thumb img{width:100%;height:auto} }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>{{TITLE}}</h1>
+  <div class="meta">{{META}}</div>
+</header>
+<div class="method">{{METHOD}}</div>
+{{ITEMS}}
+<footer>{{FOOTER}}</footer>
+</div>
+</body>
+</html>
