@@ -6,6 +6,8 @@
 ![Channels](https://img.shields.io/badge/channels-16-e8873a)
 ![Works on ChatGPT](https://img.shields.io/badge/works%20on-ChatGPT-10A37F)
 
+![Hound](assets/thumbnail.png)
+
 > 물면 안 놓는다.
 
 일반 검색이 "검색 결과가 없습니다"로 포기하는 지점에서, Hound는 냄새를 놓지 않는다. 질의를 다시
@@ -105,7 +107,7 @@ Hound는 세 스킬의 핵심을 하나로 합쳤다.
 ## 파일 구성
 
 ```
-hound/
+.                            # 레포 루트
 ├── SKILL.md                 # 스킬 본체 (라우터 + 사냥개 프로토콜)
 ├── README.md                # 이 문서
 ├── LICENSE                  # MIT
@@ -125,7 +127,9 @@ hound/
 └── assets/
     ├── topic-packs.json     # 유튜브 집계 주제 팩
     ├── template.html        # 리포트 템플릿
-    └── thumbnail.svg        # 스킬 썸네일
+    ├── hound.jpg            # 블러드하운드 원본
+    ├── hound_cream.png      # 썸네일용 크림 실루엣(리컬러)
+    └── thumbnail.svg · thumbnail.png  # 스킬 썸네일
 ```
 
 ## 라이선스
