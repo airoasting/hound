@@ -26,9 +26,15 @@
 ```bash
 # 최근 한 달(30일) 로봇 영상 조회수 top 10
 python3 scripts/yt_collect.py --pack robot --days 30 --top 10 --out ./run
-# 리포트(MD·HTML) 생성
+# (리포트 생성 전) 각 영상 요약을 top.json 의 note 에 채운다 (아래 참고)
 python3 scripts/yt_render.py --top ./run/top.json --out ./run
 ```
+
+**리포트를 만들기 전에 영상마다 2~3문장 요약을 채운다.** `top.json`의 각 항목에는 `note` 필드가 있다.
+영상 제목과 설명(`description`)을 근거로, 그 영상이 무엇을 다루는지 2~3문장으로 요약해 `note`에 넣는다.
+입니다체로, 자연스러운 한국어로, 주술 구조를 맞춰 쓴다. 원문에 없는 내용은 지어내지 않는다. 그런 다음
+`yt_render.py`를 돌리면 요약이 리포트의 각 영상 카드 아래(MD·HTML)에 그대로 들어간다. 요약이 비어 있으면
+리포트도 비어 보이니, 항상 채운 뒤 렌더링한다.
 
 **왜 이게 되고 수동 검색은 안 되나 (아프게 배운 교훈):**
 
