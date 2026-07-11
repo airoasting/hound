@@ -133,9 +133,12 @@ hound/                         # 레포 루트
 │   ├── github.md
 │   ├── rss.md
 │   └── web.md
-├── scripts/                   # 유튜브 집계 전용 (그 외 채널은 스크립트 불필요)
-│   ├── yt_collect.py
-│   └── yt_render.py
+├── scripts/
+│   ├── yt_collect.py          # 유튜브 기간·순위 집계
+│   ├── yt_render.py           # 유튜브 리포트(MD·HTML)
+│   └── save_result.py         # 검색 결과를 result.md·result.html로 저장
+├── evals/
+│   └── evals.json             # 테스트 케이스
 ├── assets/
 │   ├── topic-packs.json
 │   ├── result-template.html    # 검색 결과 HTML 템플릿
