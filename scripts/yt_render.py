@@ -14,7 +14,7 @@ import argparse, html, json, os
 from datetime import datetime, timezone
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-TEMPLATE = os.path.join(HERE, "..", "assets", "template.html")
+TEMPLATE = os.path.join(HERE, "..", "assets", "yt-report-template.html")
 
 
 def fmt_views(n):

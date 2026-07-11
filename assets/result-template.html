@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base target="_blank">
+<title>{{TITLE}}</title>
+<style>
+  :root{
+    --ink:#211a1c; --paper:#faf7f1; --card:#ffffff; --line:#e7e0d4;
+    --text:#241d18; --muted:#7c7266; --gold:#b9873f; --accent:#8a5a2a;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--text);
+    font-family:Pretendard,'Apple SD Gothic Neo','Noto Sans KR',system-ui,sans-serif;
+    line-height:1.7;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:820px;margin:0 auto;padding:0 24px 80px}
+  header{background:linear-gradient(135deg,#34291e,#211a1c 55%,#0e0b10);
+    color:#f4ecdd;margin-bottom:36px}
+  .head-in{max-width:820px;margin:0 auto;padding:36px 24px;display:flex;
+    align-items:center;justify-content:space-between;gap:16px}
+  .brand{font-size:30px;font-weight:800;letter-spacing:-1px}
+  .brand small{display:block;font-size:14px;font-weight:600;color:#e8c079;
+    letter-spacing:2px;margin-top:2px}
+  .org{font-size:13px;font-weight:700;color:#f4ecdd;opacity:.85;letter-spacing:2px}
+  h1{font-size:26px;font-weight:800;line-height:1.35;margin:0 0 8px}
+  .meta{color:var(--muted);font-size:14px;margin-bottom:28px}
+  .meta b{color:var(--text);font-weight:600}
+  h2{font-size:15px;font-weight:700;color:var(--accent);letter-spacing:.5px;
+    margin:34px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+  .answer{font-size:18px;font-weight:500;background:var(--card);border:1px solid var(--line);
+    border-left:4px solid var(--gold);border-radius:10px;padding:18px 20px}
+  ul{padding-left:0;list-style:none;margin:0}
+  li{padding:12px 0;border-bottom:1px solid var(--line)}
+  li:last-child{border-bottom:none}
+  .src{display:block;color:var(--muted);font-size:13px;margin-top:4px}
+  a{color:var(--gold);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .note{color:var(--muted);font-size:14px}
+  footer{max-width:820px;margin:48px auto 0;padding:20px 24px 0;
+    border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+  @media (prefers-color-scheme: dark){
+    :root{--paper:#15120f;--card:#1d1815;--line:#2e2620;--text:#ece3d3;--muted:#9a8f80}
+  }
+</style>
+</head>
+<body>
+  <header>
+    <div class="head-in">
+      <div class="brand">Hound<small>흔적을 놓치지 않습니다</small></div>
+      <div class="org">AI ROASTING</div>
+    </div>
+  </header>
+  <div class="wrap">
+    <h1>{{TITLE}}</h1>
+    <div class="meta">{{META}}</div>
+    {{CONTENT}}
+    <footer>Hound · 끝까지 추적하는 멀티채널 검색 · {{DATE}}</footer>
+  </div>
+</body>
+</html>

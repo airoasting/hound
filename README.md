@@ -138,15 +138,16 @@ hound/                         # 레포 루트
 │   └── yt_render.py
 ├── assets/
 │   ├── topic-packs.json
-│   ├── template.html
+│   ├── result-template.html    # 검색 결과 HTML 템플릿
+│   ├── yt-report-template.html # 유튜브 순위 리포트 템플릿
 │   ├── logo1-white.png
 │   ├── thumbnail.svg
 │   └── thumbnail.png
-└── output/                    # 검색 결과 저장 위치 (YYYYMMDD_NN/*.md)
+└── output/                    # 검색 결과 저장 위치 (YYYYMMDD_NN/result.md, result.html)
 ```
 
-검색 결과는 `output/{오늘날짜}_{순번}/` 폴더에 마크다운으로 저장됩니다(예: `output/20260711_01/result.md`).
-같은 날 여러 번 실행하면 순번이 `01`, `02`로 늘어납니다.
+검색 결과는 `output/{오늘날짜}_{순번}/` 폴더에 마크다운과 HTML 두 파일로 저장됩니다(예:
+`output/20260711_01/result.md`와 `result.html`). 같은 날 여러 번 실행하면 순번이 `01`, `02`로 늘어납니다.
 
 ## 참고한 프로젝트
 
