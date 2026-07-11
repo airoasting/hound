@@ -1,85 +1,117 @@
 <svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg"
      font-family="'Hoefler Text','Iowan Old Style','Georgia',serif">
   <defs>
-    <clipPath id="card"><rect x="0" y="0" width="1200" height="630"/></clipPath>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#34291E"/>
+      <stop offset="0.5" stop-color="#211A1C"/>
+      <stop offset="1" stop-color="#0E0B10"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.29" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#E0A768" stop-opacity="0.30"/>
+      <stop offset="1" stop-color="#E0A768" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="coat" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#E3A863"/>
+      <stop offset="1" stop-color="#A66C2C"/>
+    </linearGradient>
+    <linearGradient id="coatDark" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#B07E3E"/>
+      <stop offset="1" stop-color="#7E501F"/>
+    </linearGradient>
+    <linearGradient id="ear" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8F5A2A"/>
+      <stop offset="1" stop-color="#5E3A1A"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#E8C079"/>
+      <stop offset="1" stop-color="#B98A45"/>
+    </linearGradient>
   </defs>
 
-  <!-- field-ink ground (warm loden black, no gradient) -->
-  <rect width="1200" height="630" fill="#14160F"/>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <ellipse cx="340" cy="310" rx="430" ry="360" fill="url(#glow)"/>
 
-  <!-- surveyor grid -->
-  <g stroke="#EDE7D6" stroke-width="1" opacity="0.05">
-    <path d="M0 40H1200 M0 80H1200 M0 120H1200 M0 160H1200 M0 200H1200 M0 240H1200 M0 280H1200 M0 320H1200 M0 360H1200 M0 400H1200 M0 440H1200 M0 480H1200 M0 520H1200 M0 560H1200"/>
-    <path d="M40 0V630 M80 0V630 M120 0V630 M160 0V630 M200 0V630 M240 0V630 M280 0V630 M320 0V630 M360 0V630 M400 0V630 M440 0V630 M480 0V630 M520 0V630 M560 0V630 M600 0V630 M640 0V630 M680 0V630 M720 0V630 M760 0V630 M800 0V630 M840 0V630 M880 0V630 M920 0V630 M960 0V630 M1000 0V630 M1040 0V630 M1080 0V630 M1120 0V630 M1160 0V630"/>
-  </g>
+  <!-- ground shadow -->
+  <ellipse cx="320" cy="506" rx="196" ry="24" fill="#000000" opacity="0.32"/>
 
-  <!-- plate frame -->
-  <rect x="44" y="44" width="1112" height="542" fill="none" stroke="#EDE7D6" stroke-width="1" opacity="0.22"/>
-  <!-- corner registration crosshairs -->
-  <g stroke="#EDE7D6" stroke-width="1.2" opacity="0.55">
-    <path d="M44 32V56 M32 44H56"/>
-    <path d="M1156 32V56 M1144 44H1168"/>
-    <path d="M44 574V598 M32 586H56"/>
-    <path d="M1156 574V598 M1144 586H1168"/>
-  </g>
+  <!-- ================= HOUND (standing profile, facing right) ================= -->
+  <g>
+    <!-- tail: sabre, up and back -->
+    <path d="M176 322 C 150 300, 134 262, 138 236 C 152 244, 166 270, 182 300
+             C 190 314, 186 326, 176 322 Z" fill="url(#coat)"/>
 
-  <!-- ================= HERO: scent contour + lock ================= -->
-  <g transform="translate(322 306)" fill="none" stroke="#EDE7D6" stroke-linejoin="round">
-    <ellipse cx="0" cy="0" rx="196" ry="182" transform="rotate(-8)" stroke-width="1" opacity="0.12"/>
-    <ellipse cx="2" cy="-3" rx="162" ry="150" transform="rotate(6)" stroke-width="1" opacity="0.18"/>
-    <ellipse cx="-2" cy="2"  rx="128" ry="120" transform="rotate(-4)" stroke-width="1.4" opacity="0.30"/>
-    <ellipse cx="3" cy="-2"  rx="96"  ry="90"  transform="rotate(9)"  stroke-width="1" opacity="0.42"/>
-    <ellipse cx="-1" cy="1"  rx="64"  ry="61"  transform="rotate(-3)" stroke-width="1" opacity="0.55"/>
-    <ellipse cx="0" cy="0"   rx="34"  ry="33"  stroke-width="1.4" opacity="0.7" stroke="#EDE7D6"/>
-    <!-- contour index labels (elevation-style) -->
-    <text x="120" y="-118" font-family="'SF Mono','Menlo',monospace" font-size="12"
-          fill="#EDE7D6" stroke="none" opacity="0.45" letter-spacing="1">·280</text>
-    <text x="-150" y="96" font-family="'SF Mono','Menlo',monospace" font-size="12"
-          fill="#EDE7D6" stroke="none" opacity="0.4" letter-spacing="1">·120</text>
-  </g>
+    <!-- far legs (darker for depth) -->
+    <path d="M214 372 h20 l-3 128 h-16 z" fill="url(#coatDark)"/>
+    <ellipse cx="222" cy="502" rx="13" ry="7" fill="url(#coatDark)"/>
+    <path d="M356 366 h19 l-2 134 h-15 z" fill="url(#coatDark)"/>
+    <ellipse cx="364" cy="502" rx="13" ry="7" fill="url(#coatDark)"/>
 
-  <!-- lock / bite point -->
-  <g transform="translate(322 306)">
-    <circle r="19" fill="none" stroke="#C0402F" stroke-width="1.5"/>
-    <path d="M0 -30V-11 M0 11V30 M-30 0H-11 M11 0H30" stroke="#C0402F" stroke-width="1.5"/>
-    <circle r="6.5" fill="#C0402F"/>
-  </g>
+    <!-- torso: level topline, deep chest, tucked belly -->
+    <path d="M170 330
+             C 162 306, 176 292, 200 290
+             C 250 284, 316 286, 360 292
+             C 384 296, 400 306, 408 326
+             C 416 348, 414 368, 400 380
+             C 384 392, 360 394, 336 392
+             C 316 390, 300 384, 292 372
+             C 280 384, 258 388, 236 388
+             C 210 388, 186 380, 176 362
+             C 168 350, 168 340, 170 330 Z" fill="url(#coat)"/>
 
-  <!-- scent trail: dotted survey line from lock toward wordmark -->
-  <path d="M341 306 C 430 300, 470 250, 560 232" fill="none" stroke="#EDE7D6"
-        stroke-width="1.4" stroke-linecap="round" stroke-dasharray="0.5 11" opacity="0.5"/>
-  <g stroke="#EDE7D6" stroke-width="1" opacity="0.35">
-    <path d="M436 296l-6 12 M486 262l-6 12"/>
+    <!-- near legs -->
+    <!-- near hind: thigh + shank -->
+    <path d="M196 336 C 224 330, 248 348, 250 386 C 250 402, 242 410, 234 410
+             C 240 440, 240 476, 238 500 h-20 C 218 470, 214 430, 210 400
+             C 196 388, 186 366, 190 348 C 191 342, 193 338, 196 336 Z" fill="url(#coat)"/>
+    <ellipse cx="228" cy="502" rx="14" ry="7.5" fill="url(#coat)"/>
+    <!-- near fore: straight column -->
+    <path d="M372 372 h22 l-3 128 h-18 z" fill="url(#coat)"/>
+    <ellipse cx="381" cy="502" rx="14" ry="7.5" fill="url(#coat)"/>
+
+    <!-- neck + head + muzzle -->
+    <path d="M372 300
+             C 388 276, 404 256, 424 246
+             C 446 236, 470 240, 482 252
+             C 470 258, 452 258, 440 262
+             C 468 266, 500 272, 516 284
+             C 528 293, 526 302, 512 304
+             C 496 306, 476 302, 462 298
+             C 456 314, 442 326, 424 330
+             C 404 334, 386 328, 378 316
+             C 372 310, 370 304, 372 300 Z" fill="url(#coat)"/>
+
+    <!-- long droopy ear -->
+    <path d="M430 258
+             C 410 268, 398 300, 400 336
+             C 401 358, 416 368, 432 362
+             C 444 357, 448 330, 448 302
+             C 448 282, 442 264, 436 256 Z" fill="url(#ear)"/>
+
+    <!-- nose, eye, brow -->
+    <circle cx="516" cy="290" r="8.5" fill="#241710"/>
+    <circle cx="470" cy="266" r="7" fill="#241710"/>
+    <circle cx="472.4" cy="263.6" r="2.2" fill="#EBDCC0"/>
+    <path d="M456 252 C 464 248, 476 248, 484 252" stroke="#6E441F" stroke-width="2.6"
+          fill="none" opacity="0.5" stroke-linecap="round"/>
+    <!-- mouth line -->
+    <path d="M512 296 C 500 302, 486 302, 476 300" stroke="#6E441F" stroke-width="2"
+          fill="none" opacity="0.45" stroke-linecap="round"/>
+
+    <!-- topline highlight -->
+    <path d="M200 296 C 262 289, 330 291, 372 298" stroke="#F0C892" stroke-width="3"
+          fill="none" opacity="0.4" stroke-linecap="round"/>
   </g>
-  <text x="392" y="338" font-family="'SF Mono','Menlo',monospace" font-size="12"
-        fill="#EDE7D6" opacity="0.4" letter-spacing="1">37.5665, 126.9780</text>
 
   <!-- ================= WORDMARK ================= -->
-  <!-- top eyebrow -->
-  <text x="620" y="108" font-family="'SF Mono','Menlo',monospace" font-size="15"
-        fill="#EDE7D6" opacity="0.6" letter-spacing="4">SCENT-TRACKING SEARCH</text>
-  <text x="1112" y="108" font-family="'SF Mono','Menlo',monospace" font-size="15"
-        fill="#EDE7D6" opacity="0.45" letter-spacing="2" text-anchor="end">FIELD CARD / No.01</text>
-  <line x1="620" y1="126" x2="1112" y2="126" stroke="#EDE7D6" stroke-width="1" opacity="0.2"/>
+  <text x="636" y="152" font-family="'SF Mono','Menlo',monospace" font-size="17"
+        fill="#E8C079" opacity="0.85" letter-spacing="6">SCENT-TRACKING SEARCH</text>
 
-  <!-- display -->
-  <text x="614" y="298" font-size="150" font-weight="700" fill="#EDE7D6" letter-spacing="-3">Hound</text>
-  <text x="622" y="352" font-family="'Apple SD Gothic Neo','Noto Sans KR',sans-serif"
-        font-size="30" font-weight="500" fill="#EDE7D6" opacity="0.72" letter-spacing="2">사냥개 · 무조건 SEARCH</text>
+  <text x="632" y="332" font-size="150" font-weight="700" fill="#F4ECDD" letter-spacing="-3">Hound</text>
 
-  <!-- oxblood seal: 물면 안 놓는다 -->
-  <g transform="translate(620 392)">
-    <rect x="0" y="0" width="10" height="46" fill="#C0402F"/>
-    <text x="30" y="37" font-family="'Apple SD Gothic Neo','Noto Sans KR',sans-serif"
-          font-size="40" font-weight="800" fill="#EDE7D6" letter-spacing="1">물면 안 놓는다</text>
-  </g>
+  <line x1="640" y1="374" x2="1096" y2="374" stroke="url(#gold)" stroke-width="1.5" opacity="0.6"/>
 
-  <!-- ================= BOTTOM MANIFEST ================= -->
-  <line x1="620" y1="470" x2="1112" y2="470" stroke="#EDE7D6" stroke-width="1" opacity="0.2"/>
-  <text x="620" y="512" font-family="'SF Mono','Menlo',monospace" font-size="16"
-        fill="#EDE7D6" opacity="0.72" letter-spacing="1">16 CHANNELS</text>
-  <text x="620" y="540" font-family="'SF Mono','Menlo',monospace" font-size="13"
-        fill="#EDE7D6" opacity="0.45" letter-spacing="0.5">NAVER · YOUTUBE · X · REDDIT · GITHUB · RSS · +10 MORE</text>
-  <text x="1112" y="512" font-family="'SF Mono','Menlo',monospace" font-size="16"
-        fill="#EDE7D6" opacity="0.5" letter-spacing="2" text-anchor="end">MIT</text>
+  <text x="640" y="432" font-size="44" font-style="italic" fill="#F4ECDD" opacity="0.92">Never loses the trail.</text>
+
+  <text x="640" y="488" font-family="'SF Mono','Menlo',monospace" font-size="17"
+        fill="#F4ECDD" opacity="0.5" letter-spacing="1.5">Relentless search across 16 channels</text>
 </svg>
