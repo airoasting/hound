@@ -140,7 +140,6 @@ hound/                         # 레포 루트
 │   ├── topic-packs.json
 │   ├── template.html
 │   ├── logo1-white.png
-│   ├── hound_white.png
 │   ├── thumbnail.svg
 │   └── thumbnail.png
 └── output/                    # 검색 결과 저장 위치 (YYYYMMDD_NN/*.md)
