@@ -7,7 +7,7 @@ robot-radar 수집 엔진.
 
 두 엔진:
   1) YouTube Data API v3  — 환경변수 YOUTUBE_API_KEY 가 있으면 자동 사용 (정밀·빠름)
-  2) yt-dlp               — 키가 없으면 사용 (설정 불필요, 항상 동작)
+  2) yt-dlp               — 키가 없으면 사용 (없으면 첫 실행 때 자동 설치)
 
 핵심 원칙: 어떤 엔진이든 '정확한 게시 시각(timestamp)'으로 N일 창을 재확인해
           기간을 벗어난 영상은 버린다. 검색 필터의 느슨함을 코드가 보정한다.
@@ -45,12 +45,57 @@ def sp_for_days(days):
     return SP_THIS_YEAR
 
 
+def ytdlp_works(cmd):
+    try:
+        return subprocess.run(cmd + ["--version"], capture_output=True,
+                              timeout=30).returncode == 0
+    except (OSError, subprocess.SubprocessError):
+        return False
+
+
+def ytdlp_install():
+    """yt-dlp 자동 설치. pip 먼저, 막히면 brew. 성공 여부를 리턴."""
+    from shutil import which
+    # venv 안에서는 --user 가 거부된다. PEP 668 환경(brew python 등)에서는 pip 자체가 막힌다.
+    in_venv = sys.prefix != sys.base_prefix
+    pip = [sys.executable, "-m", "pip", "install", "--quiet"]
+    attempts = [pip + ["yt-dlp"]] if in_venv else [pip + ["--user", "yt-dlp"], pip + ["yt-dlp"]]
+    if which("brew"):
+        attempts.append(["brew", "install", "yt-dlp"])
+    for cmd in attempts:
+        try:
+            # stdout 은 top.json 경로 전용이다. 설치 로그가 섞이지 않게 가둔다.
+            if subprocess.run(cmd, capture_output=True, timeout=300).returncode == 0:
+                return True
+        except (OSError, subprocess.SubprocessError):
+            continue
+    return False
+
+
 def ytdlp_cmd():
-    """yt-dlp 실행 경로 결정. 바이너리 우선, 없으면 python 모듈."""
+    """yt-dlp 실행 경로 결정. 바이너리 우선, 없으면 python 모듈. 둘 다 없으면 설치한다."""
     from shutil import which
     if which("yt-dlp"):
         return ["yt-dlp"]
-    return [sys.executable, "-m", "yt_dlp"]
+    mod = [sys.executable, "-m", "yt_dlp"]
+    if ytdlp_works(mod):
+        return mod
+
+    log("[setup] 유튜브 집계에 yt-dlp 가 필요한데 없습니다. 지금 설치합니다.")
+    if not ytdlp_install():
+        log("[setup] 자동 설치에 실패했습니다. 직접 설치한 뒤 다시 실행해 주세요:")
+        log("        pip install --user yt-dlp   (또는  brew install yt-dlp)")
+        sys.exit(1)
+
+    if which("yt-dlp"):
+        log("[setup] yt-dlp 설치 완료.")
+        return ["yt-dlp"]
+    if ytdlp_works(mod):
+        log("[setup] yt-dlp 설치 완료.")
+        return mod
+    # 설치는 됐는데 이 인터프리터에서 안 보이는 경우(--user 경로가 PATH 밖 등).
+    log("[setup] 설치는 됐지만 실행 경로를 찾지 못했습니다. 셸을 새로 열고 다시 실행해 주세요.")
+    sys.exit(1)
 
 
 # ----------------------------- yt-dlp 엔진 -----------------------------
