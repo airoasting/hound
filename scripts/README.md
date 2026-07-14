@@ -7,6 +7,7 @@
 - `save_result.py`: 찾은 결과(또는 증거 보고)를 JSON으로 받아 `output/{날짜}_{순번}/`에 `result.md`와
   `result.html`로 저장합니다. 매번 손으로 마크다운·HTML을 조립하지 않게 이 작업만 코드로 고정했습니다.
   사용법은 [SKILL.md](../SKILL.md)의 "결과 저장"을 봅니다.
+- `verify_access.py`: 채널 문서(`references/*.md`)의 접근 주장이 아직 유효한지 실측합니다(아래 설명).
 
 ## 왜 채널을 긁는 스크립트는 없나
 
@@ -23,6 +24,11 @@ GitHub은 검색과 페이지 열람, RSS는 피드 열람으로 끝납니다. �
   봇 차단 때문에 자주 어긋나서 코드로 고정했습니다.
 - `yt_render.py`: 위 수집 결과를 마크다운과 HTML 리포트로 만듭니다.
 - `save_result.py`: 검색 결과 JSON을 받아 `output/{날짜}_{순번}/`에 `result.md`와 `result.html`을 만듭니다.
+- `verify_access.py`: 각 채널 문서가 근거로 삼는 엔드포인트를 문서와 같은 방식(브라우저 UA curl)으로 때려
+  보고 PASS/FAIL로 보고합니다. 플랫폼의 차단 정책·API 스펙은 수시로 바뀌므로, 분기 1회쯤 돌려 문서가
+  현실과 아직 맞는지 확인합니다. FAIL이 뜨면 그 문서를 다시 실측·수정합니다. MCP·브라우저 전용 채널
+  (네이버·유튜브·페이스북 등)은 curl로 재현할 수 없어 SKIP으로 표시합니다. 종료 코드는 FAIL 개수입니다.
+  실행: `python3 scripts/verify_access.py`
 
 유튜브 사용법은 [references/youtube.md](../references/youtube.md)와
 [references/youtube-ranking-notes.md](../references/youtube-ranking-notes.md), 결과 저장은
