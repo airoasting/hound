@@ -7,8 +7,10 @@
 
 1. **웹 검색.** `WebSearch`로 `site:linkedin.com/in [이름 회사]`(인물),
    `site:linkedin.com/company [회사명]`(회사), `site:linkedin.com/jobs [직무 지역]`(채용).
-2. **Jina Reader로 공개 본문(핵심).** 링크드인 공개 페이지는 그냥 `WebFetch`하면 로그인 리다이렉트가
-   잦다. `https://r.jina.ai/<링크드인URL>`로 감싸면 공개 프로필·회사·채용 본문이 깔끔히 뽑힌다.
+2. **공개 본문 열기.** 링크드인 공개 페이지는 그냥 `WebFetch`하면 로그인 리다이렉트가 잦다. Jina Reader
+   (`https://r.jina.ai/<링크드인URL>`)로 감싸면 공개 프로필·회사·채용 본문이 깔끔히 뽑히지만, **Jina는
+   이제 무료 API 키를 요구한다**(무키면 401, [access-tiers.md](access-tiers.md)). 키가 없으면 인앱
+   브라우저로 렌더링된 공개 페이지를 읽는 쪽으로 내려간다.
 3. **로그인 벽.** 인맥·비공개 활동·전체 경력은 로그인이 필요하다. 사용자 허락 하에 실제 크롬 세션으로
    읽거나 "링크드인 로그인 필요"로 보고한다.
 

@@ -7,8 +7,9 @@
 
 1. **웹 검색.** `WebSearch`로 `site:instagram.com [키워드]` 또는 `[사용자명] instagram`.
    공개 프로필·게시물·해시태그 페이지가 잡힌다.
-2. **공개 프로필/게시물 열기.** URL을 `WebFetch` 또는 Jina Reader(`https://r.jina.ai/<URL>`)로 연다.
-   공개 계정의 소개·게시물 캡션·해시태그가 보인다.
+2. **공개 프로필/게시물 열기.** URL을 `WebFetch`로 연다. 공개 계정의 소개·게시물 캡션·해시태그가 보인다.
+   Jina Reader(`https://r.jina.ai/<URL>`)는 보조로 쓰되, 이제 무료 API 키를 요구하니(무키면 401,
+   [access-tiers.md](access-tiers.md)) 키가 없으면 3번으로 내려간다.
 3. **실제 크롬 세션(로그인 벽 정공법).** 최근 게시물 피드·탐색은 대부분 로그인을 요구한다. 사용자
    허락 하에 실제 로그인된 크롬(claude-in-chrome)으로 **읽기만** 수행한다.
 

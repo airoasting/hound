@@ -1,7 +1,7 @@
 # 채널: 네이버 (정보의 본진)
 
 한국어 정보가 가장 두껍게 쌓이는 곳. 하나만 쓰지 말고 **성격에 맞는 하위 채널을 갈아탄다.**
-모두 네이버 검색 MCP 도구(`NaverSearch-search_*`)로 접근한다.
+모두 네이버 검색 MCP 도구(`NaverSearch-search_*`)로 접근한다. ([access-tiers.md](access-tiers.md) 참조)
 
 ## 하위 채널 지도
 
@@ -17,6 +17,7 @@
 | 이미지 | `search_image` | 시각 자료 |
 | 웹문서 종합 | `search_webkr` | 위에 안 걸리는 한국어 웹 |
 | 책·전문서 | `search_book` | 도서 정보 |
+| 논문·학술 | `search_academic` | 학위·학술 논문, 연구 자료 |
 | 검색 트렌드·수요 | `datalab_search` | 키워드 검색량 추이 |
 
 ## 긁는 요령
