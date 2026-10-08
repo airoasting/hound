@@ -10,9 +10,10 @@
 
 ## 쓰임 2. 영상 내용 읽기 (자막·설명·댓글)
 
-`yt-dlp`로 영상을 **본문처럼** 읽는다. 쓰임 3의 `scripts/yt_collect.py`는 없으면 알아서 깔지만,
-아래 명령을 손으로 칠 때는 `yt-dlp`가 있어야 한다. 없으면 `pip install --user yt-dlp`(또는
-`brew install yt-dlp`)로 한 번 깔고 쓴다.
+`yt-dlp`로 영상을 **본문처럼** 읽는다. 쓰임 3의 `scripts/yt_collect.py`는 없거나 낡았으면 알아서
+깔고 갱신하지만, 아래 명령을 손으로 칠 때는 `yt-dlp`가 있어야 한다. 없으면 `brew install yt-dlp`로 한 번
+깔고 쓴다. `pip install --user yt-dlp`는 파이썬 3.10 이상에서만 쓴다. macOS 기본 파이썬 3.9에서는 구버전이
+깔려 유튜브에서 `The page needs to be reloaded`로 실패한다.
 
 - **자막 추출:** `yt-dlp --skip-download --write-auto-sub --sub-lang ko,en --sub-format vtt <URL>`
 - **메타·설명·조회수:** `yt-dlp --skip-download --print "%(title)s|%(view_count)s|%(upload_date)s|%(channel)s" <URL>`

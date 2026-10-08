@@ -20,8 +20,9 @@ GitHub은 검색과 페이지 열람, RSS는 피드 열람으로 끝납니다. �
 
 - `yt_collect.py`: 한 주제의 기간 안 영상을 모아 조회수 순위 top N을 뽑습니다. 검색, 메타데이터 취득,
   정확한 게시일로 기간 재확인, 조회수 정렬, 채널 중복 제거를 정확히 밟습니다. yt-dlp(키 불필요)를 기본으로
-  쓰고, 없으면 첫 실행 때 자동으로 설치합니다. `YOUTUBE_API_KEY`가 있으면 더 빠른 API 경로를 씁니다. 손으로 하면 유튜브의 느슨한 기간 필터와
-  봇 차단 때문에 자주 어긋나서 코드로 고정했습니다.
+  쓰고, 없거나 낡았으면 첫 실행 때 자동으로 설치·갱신합니다(아래 "yt-dlp 선택 규칙"). `YOUTUBE_API_KEY`가
+  있으면 더 빠른 API 경로를 씁니다. 손으로 하면 유튜브의 느슨한 기간 필터와 봇 차단 때문에 자주 어긋나서
+  코드로 고정했습니다.
 - `yt_render.py`: 위 수집 결과를 마크다운과 HTML 리포트로 만듭니다.
 - `save_result.py`: 검색 결과 JSON을 받아 `output/{날짜}_{순번}/`에 `result.md`와 `result.html`을 만듭니다.
 - `verify_access.py`: 각 채널 문서가 근거로 삼는 엔드포인트를 문서와 같은 방식(브라우저 UA curl)으로 때려
@@ -29,6 +30,21 @@ GitHub은 검색과 페이지 열람, RSS는 피드 열람으로 끝납니다. �
   현실과 아직 맞는지 확인합니다. FAIL이 뜨면 그 문서를 다시 실측·수정합니다. MCP·브라우저 전용 채널
   (네이버·유튜브·페이스북 등)은 curl로 재현할 수 없어 SKIP으로 표시합니다. 종료 코드는 FAIL 개수입니다.
   실행: `python3 scripts/verify_access.py`
+
+## yt-dlp 선택 규칙 (`yt_collect.py`)
+
+최신 yt-dlp는 Python 3.10 이상을 요구합니다. macOS 기본 `/usr/bin/python3`(3.9.6)에서 pip로 깔면 2025.10.14에서
+멈춘 버전이 조용히 깔리고, 이 버전은 2026-10-08 실측에서 유튜브 추출에 실패했습니다("The page needs to be
+reloaded"). 같은 URL에서 2026.08.19는 성공했습니다. 그래서 스크립트는 다음 순서로 고릅니다.
+
+1. 후보를 이 순서로 훑습니다. brew 바이너리(`/opt/homebrew/bin/yt-dlp`, `/usr/local/bin/yt-dlp`), PATH의
+   `yt-dlp`, 현재 파이썬의 `yt_dlp` 모듈(3.10 이상일 때만), 다른 Python 3.10 이상의 모듈, 마지막으로 3.9의 모듈입니다.
+2. `--version` 날짜가 120일보다 오래되면 낡았다고 보고 건너뜁니다. 최신 후보가 하나라도 있으면 바로 씁니다.
+3. 최신 후보가 없으면 설치·갱신합니다. 현재 파이썬이 3.9면 brew(`install` 또는 `upgrade`), 다른 3.10 이상의
+   pip, 현재 pip 순서이고, 3.10 이상이면 현재 pip, brew 순서입니다.
+4. 그래도 최신을 못 구하면 낡은 후보로 경고와 함께 진행합니다. 아무것도 없으면 설치 안내를 내고 멈춥니다.
+
+설치 로그는 모두 가둬서, stdout에는 `top.json` 경로만 나갑니다.
 
 유튜브 사용법은 [references/youtube.md](../references/youtube.md)와
 [references/youtube-ranking-notes.md](../references/youtube-ranking-notes.md), 결과 저장은

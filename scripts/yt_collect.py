@@ -45,56 +45,130 @@ def sp_for_days(days):
     return SP_THIS_YEAR
 
 
-def ytdlp_works(cmd):
+# yt-dlp 는 Python 3.10+ 를 요구한다. 3.9(macOS 기본 /usr/bin/python3)의 pip 는 2025.10.14 에서 멈추고,
+# 그 버전은 2026-10 기준 유튜브 추출에 실패한다("The page needs to be reloaded"). 그래서 3.9 에서는
+# 이 인터프리터의 pip·모듈을 마지막 수단으로만 쓰고, brew 바이너리나 3.10+ 파이썬을 먼저 쓴다.
+LEGACY_PY = sys.version_info < (3, 10)
+BREW_YTDLP = ["/opt/homebrew/bin/yt-dlp", "/usr/local/bin/yt-dlp"]
+# 유튜브가 자주 바뀌어 오래된 yt-dlp 는 조용히 깨진다. 이보다 오래된 버전은 '낡음'으로 보고 갱신한다.
+YTDLP_MAX_AGE_DAYS = 120
+
+
+def ytdlp_probe(cmd):
+    """cmd 로 yt-dlp 가 실행되면 (버전, 낡았는지) 를, 안 되면 None 을 리턴."""
     try:
-        return subprocess.run(cmd + ["--version"], capture_output=True,
-                              timeout=30).returncode == 0
+        r = subprocess.run(cmd + ["--version"], capture_output=True, text=True, timeout=30)
     except (OSError, subprocess.SubprocessError):
-        return False
+        return None
+    if r.returncode != 0:
+        return None
+    ver = r.stdout.strip()
+    m = re.match(r"(\d{4})\.(\d{1,2})\.(\d{1,2})", ver)
+    if not m:
+        return ver, False  # 날짜형이 아닌 버전(개발 빌드 등)은 낡았다고 단정하지 않는다
+    age = (datetime.now() - datetime(*map(int, m.groups()))).days
+    return ver, age > YTDLP_MAX_AGE_DAYS
+
+
+def modern_pythons():
+    """이 인터프리터 말고, PATH 나 brew 경로에 있는 Python 3.10+ 실행 파일 목록."""
+    from shutil import which
+    found = []
+    for minor in range(14, 9, -1):
+        name = f"python3.{minor}"
+        for p in (which(name), f"/opt/homebrew/bin/{name}", f"/usr/local/bin/{name}"):
+            if p and os.path.isfile(p) and os.access(p, os.X_OK):
+                found.append(p)
+    return found
+
+
+def ytdlp_candidates():
+    """실행 후보를 선호 순서대로. brew 바이너리 > PATH 바이너리 > 3.10+ 모듈 > 3.9 모듈."""
+    from shutil import which
+    cands = [[p] for p in BREW_YTDLP if os.path.isfile(p)]
+    if which("yt-dlp"):
+        cands.append([which("yt-dlp")])
+    mod = [sys.executable, "-m", "yt_dlp"]
+    if not LEGACY_PY:
+        cands.append(mod)
+    cands += [[py, "-m", "yt_dlp"] for py in modern_pythons()]
+    if LEGACY_PY:
+        cands.append(mod)  # 3.9 모듈은 거의 확실히 낡았다. 다른 게 없을 때만.
+    seen, out = set(), []
+    for c in cands:
+        key = tuple([os.path.realpath(c[0])] + c[1:])
+        if key not in seen:
+            seen.add(key)
+            out.append(c)
+    return out
+
+
+def ytdlp_pick():
+    """후보를 훑어 (최신 후보, 낡았지만 돌아가는 첫 후보) 를 리턴. 각각 (cmd, 버전) 또는 None."""
+    stale = None
+    for cmd in ytdlp_candidates():
+        probe = ytdlp_probe(cmd)
+        if probe is None:
+            continue
+        ver, is_stale = probe
+        if not is_stale:
+            return (cmd, ver), stale
+        if stale is None:
+            stale = (cmd, ver)
+    return None, stale
 
 
 def ytdlp_install():
-    """yt-dlp 자동 설치. pip 먼저, 막히면 brew. 성공 여부를 리턴."""
+    """yt-dlp 설치·갱신. 3.9 면 brew 와 3.10+ pip 먼저, 아니면 현재 pip 먼저. 하나라도 성공하면 True."""
     from shutil import which
     # venv 안에서는 --user 가 거부된다. PEP 668 환경(brew python 등)에서는 pip 자체가 막힌다.
     in_venv = sys.prefix != sys.base_prefix
-    pip = [sys.executable, "-m", "pip", "install", "--quiet"]
-    attempts = [pip + ["yt-dlp"]] if in_venv else [pip + ["--user", "yt-dlp"], pip + ["yt-dlp"]]
+    pip = [sys.executable, "-m", "pip", "install", "--quiet", "--upgrade"]
+    pip_attempts = [pip + ["yt-dlp"]] if in_venv else [pip + ["--user", "yt-dlp"], pip + ["yt-dlp"]]
+    brew_attempts = []
     if which("brew"):
-        attempts.append(["brew", "install", "yt-dlp"])
+        has_brew = any(os.path.isfile(p) for p in BREW_YTDLP)
+        brew_attempts.append(["brew", "upgrade" if has_brew else "install", "yt-dlp"])
+    if LEGACY_PY:
+        modern_pip = [[py, "-m", "pip", "install", "--quiet", "--upgrade", "--user", "yt-dlp"]
+                      for py in modern_pythons()]
+        attempts = brew_attempts + modern_pip + pip_attempts
+    else:
+        attempts = pip_attempts + brew_attempts
+    ok = False
     for cmd in attempts:
         try:
             # stdout 은 top.json 경로 전용이다. 설치 로그가 섞이지 않게 가둔다.
-            if subprocess.run(cmd, capture_output=True, timeout=300).returncode == 0:
-                return True
+            if subprocess.run(cmd, capture_output=True, timeout=600).returncode == 0:
+                ok = True
+                if ytdlp_pick()[0]:
+                    return True
         except (OSError, subprocess.SubprocessError):
             continue
-    return False
+    return ok
 
 
 def ytdlp_cmd():
-    """yt-dlp 실행 경로 결정. 바이너리 우선, 없으면 python 모듈. 둘 다 없으면 설치한다."""
-    from shutil import which
-    if which("yt-dlp"):
-        return ["yt-dlp"]
-    mod = [sys.executable, "-m", "yt_dlp"]
-    if ytdlp_works(mod):
-        return mod
+    """yt-dlp 실행 경로 결정. 최신 후보가 있으면 쓰고, 없거나 낡았으면 설치·갱신한다."""
+    fresh, stale = ytdlp_pick()
+    if fresh:
+        return fresh[0]
 
-    log("[setup] 유튜브 집계에 yt-dlp 가 필요한데 없습니다. 지금 설치합니다.")
-    if not ytdlp_install():
-        log("[setup] 자동 설치에 실패했습니다. 직접 설치한 뒤 다시 실행해 주세요:")
-        log("        pip install --user yt-dlp   (또는  brew install yt-dlp)")
-        sys.exit(1)
+    if stale:
+        log(f"[setup] yt-dlp {stale[1]} 이 낡았습니다(유튜브에서 실패할 수 있음). 갱신합니다.")
+    else:
+        log("[setup] 유튜브 집계에 yt-dlp 가 필요한데 없습니다. 지금 설치합니다.")
+    ytdlp_install()
 
-    if which("yt-dlp"):
-        log("[setup] yt-dlp 설치 완료.")
-        return ["yt-dlp"]
-    if ytdlp_works(mod):
-        log("[setup] yt-dlp 설치 완료.")
-        return mod
-    # 설치는 됐는데 이 인터프리터에서 안 보이는 경우(--user 경로가 PATH 밖 등).
-    log("[setup] 설치는 됐지만 실행 경로를 찾지 못했습니다. 셸을 새로 열고 다시 실행해 주세요.")
+    fresh, stale = ytdlp_pick()
+    if fresh:
+        log(f"[setup] yt-dlp {fresh[1]} 준비 완료.")
+        return fresh[0]
+    if stale:
+        log(f"[setup] 최신 yt-dlp 를 구하지 못해 {stale[1]} 로 진행합니다. 실패하면  brew install yt-dlp  후 다시 실행하세요.")
+        return stale[0]
+    log("[setup] 자동 설치에 실패했습니다. 직접 설치한 뒤 다시 실행해 주세요:")
+    log("        brew install yt-dlp   (Python 3.10 이상이면  pip install --user yt-dlp  도 됩니다)")
     sys.exit(1)
 
 
