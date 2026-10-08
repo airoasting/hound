@@ -1,6 +1,6 @@
 # Hound 🐕
 
-![Version](https://img.shields.io/badge/version-1.0.0-2ea44f)
+![Version](https://img.shields.io/badge/version-1.1.0-2ea44f)
 ![License](https://img.shields.io/badge/license-MIT-2f81f7)
 ![Claude Code](https://img.shields.io/badge/Claude%20Code-Skill-8A63FF)
 ![Channels](https://img.shields.io/badge/channels-16-e8873a)
@@ -169,7 +169,7 @@ hound/                         # 레포 루트
 
 ## 버전 히스토리
 
-### 미공개 (2026-10-08)
+### v1.1.0 (2026-10-08)
 
 - 로그인 벽 수집 순서를 추가했습니다. Hound는 `yt-dlp`가 지원하는 URL을 `yt-dlp`로 먼저 읽고, 지원하지
   않거나 실패하면 로그인된 크롬(Claude in Chrome)으로 직접 읽습니다. 크롬이 연결돼 있지 않으면 설치
