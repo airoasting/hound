@@ -1,6 +1,6 @@
 # Hound 🐕
 
-![Version](https://img.shields.io/badge/version-1.1.0-2ea44f)
+![Version](https://img.shields.io/badge/version-1.1.1-2ea44f)
 ![License](https://img.shields.io/badge/license-MIT-2f81f7)
 ![Claude Code](https://img.shields.io/badge/Claude%20Code-Skill-8A63FF)
 ![Channels](https://img.shields.io/badge/channels-16-e8873a)
@@ -168,6 +168,11 @@ hound/                         # 레포 루트
 `output/20260711_01/result.md`와 `result.html`). 같은 날 여러 번 실행하면 순번이 `01`, `02`로 늘어납니다.
 
 ## 버전 히스토리
+
+### v1.1.1 (2026-11-16)
+
+- Codex 플러그인으로도 설치됩니다. `.codex-plugin/` 매니페스트와 진입 스킬을 추가했습니다. 스킬 본문은
+  바뀌지 않았습니다
 
 ### v1.1.0 (2026-10-08)
 
