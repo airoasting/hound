@@ -12,6 +12,9 @@
    - 토픽 상세·댓글: `https://www.v2ex.com/api/replies/show.json?topic_id=ID`
 2. **웹 검색.** `WebSearch`로 `site:v2ex.com [키워드]`로 특정 토픽을 찾은 뒤 위 API로 상세를 연다.
 
+**브라우저는 쓰지 않는다(실측 2026-11-21).** 인앱 브라우저로 `v2ex.com`을 열면 Cloudflare 확인 화면
+("Just a moment...", HTTP 403)에 걸린다. 공개 API(`hot.json`)는 같은 날 200으로 열렸다. API로 충분하다.
+
 ## 요령
 
 - 기술 제품·서비스에 대한 개발자들의 솔직한 평가를 얻기 좋다.

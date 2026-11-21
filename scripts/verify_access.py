@@ -52,7 +52,8 @@ def chk_jina():
     st, _ = curl("https://r.jina.ai/https://example.com")
     if st == 0:
         return None, "요청 실패"
-    return st == 401, f"무키 상태 status={st} (기대 401)"
+    # 문서 주장(2026-11-21): 키 없이도 200. 401로 돌아가면 문서를 다시 '키 필요'로 고친다.
+    return st == 200, f"무키 상태 status={st} (기대 200)"
 
 
 def chk_reddit():
@@ -96,11 +97,19 @@ def chk_xueqiu():
 
 
 def chk_xiaohongshu():
-    st, _ = curl("https://www.xiaohongshu.com/explore")
-    if st == 0:
+    # 문서 주장(2026-11-21): xiaohongshu.com/explore는 rednote.com으로 리다이렉트된다.
+    # 비브라우저 요청은 rednote.com/login에 도착한다(피드는 인앱 브라우저로 연다).
+    cmd = ["curl", "-s", "-L", "-o", "/dev/null", "--max-time", str(TIMEOUT), "-A", UA,
+           "-w", "%{http_code} %{url_effective}", "https://www.xiaohongshu.com/explore"]
+    try:
+        out = subprocess.run(cmd, capture_output=True, text=True, timeout=TIMEOUT + 10).stdout.split()
+    except subprocess.TimeoutExpired:
         return None, "요청 실패"
-    # 문서 주장: /explore 피드는 무로그인으로 열린다.
-    return st == 200, f"/explore status={st} (기대 200)"
+    if len(out) != 2 or out[0] == "000":
+        return None, "요청 실패"
+    st, final = int(out[0]), out[1]
+    moved = "rednote.com" in final
+    return st == 200 and moved, f"/explore status={st}, 최종={final} (기대 200 + rednote.com)"
 
 
 def chk_fxtwitter():
@@ -114,24 +123,32 @@ def chk_fxtwitter():
     return st == 200 and bool(txt), f"status={st}, 본문={'회수됨' if txt else '없음'}"
 
 
-def chk_vxtwitter():
-    st, _ = curl("https://api.vxtwitter.com/jack/status/20")
-    if st == 0:
-        return None, "요청 실패"
-    return st == 200, f"status={st} (기대 200)"
-
-
 def chk_bilibili_view():
+    # 문서 주장(2026-11-21): view API는 비브라우저 요청에 412를 낸다(보조 경로).
+    # code:0으로 열리면 FAIL. 문서에서 view API를 다시 1순위로 올릴지 검토한다.
     st, body = curl("https://api.bilibili.com/x/web-interface/view?aid=2")
     if st == 0:
         return None, "요청 실패"
     try:
-        d = json.loads(body)
-        code = d.get("code")
-        has_stat = bool(d.get("data", {}).get("stat"))
+        code = json.loads(body).get("code")
     except Exception:
-        code, has_stat = None, False
-    return st == 200 and code == 0 and has_stat, f"status={st}, api code={code}, 통계={'있음' if has_stat else '없음'}"
+        code = None
+    return st == 412, f"status={st}, api code={code} (기대 412)"
+
+
+def chk_bilibili_ytdlp():
+    # 문서 주장(2026-11-21): 빌리빌리 메타·통계는 yt-dlp로 받는다(1순위).
+    from shutil import which
+    if not which("yt-dlp"):
+        return None, "yt-dlp 없음(설치 후 다시 확인)"
+    cmd = ["yt-dlp", "--ies", "default,-generic", "-J", "--skip-download", "--no-warnings",
+           "https://www.bilibili.com/video/BV1xx411c7mD"]
+    try:
+        out = subprocess.run(cmd, capture_output=True, text=True, timeout=90).stdout
+        views = json.loads(out).get("view_count")
+    except Exception:
+        views = None
+    return bool(views), f"view_count={views} (기대 숫자)"
 
 
 def chk_bilibili_danmaku():
@@ -143,27 +160,29 @@ def chk_bilibili_danmaku():
 
 
 CHECKS = [
-    ("Jina Reader 무키 401",        "access-tiers, linkedin, instagram", chk_jina),
+    ("Jina Reader 무키 200",        "access-tiers, linkedin, instagram", chk_jina),
     ("Reddit .json 차단",           "reddit",                            chk_reddit),
     ("V2EX 공개 API",               "v2ex",                              chk_v2ex),
     ("GitHub REST API",             "github",                            chk_github),
     ("샤오위저우 SSR+og:audio",     "xiaoyuzhou",                        chk_xiaoyuzhou),
     ("슈에추 WAF 벽",               "xueqiu",                            chk_xueqiu),
-    ("샤오홍슈 /explore 피드",      "xiaohongshu",                       chk_xiaohongshu),
+    ("샤오홍슈 → rednote.com",      "xiaohongshu",                       chk_xiaohongshu),
     ("fxtwitter JSON API",          "x-twitter",                         chk_fxtwitter),
-    ("vxtwitter JSON API",          "x-twitter",                         chk_vxtwitter),
-    ("빌리빌리 view API code:0",    "bilibili",                          chk_bilibili_view),
+    ("빌리빌리 yt-dlp 메타",        "bilibili",                          chk_bilibili_ytdlp),
+    ("빌리빌리 view API 412",       "bilibili",                          chk_bilibili_view),
     ("빌리빌리 탄막 XML",           "bilibili",                          chk_bilibili_danmaku),
 ]
 
-# curl로 재현 불가한 채널(참고용 표시).
+# curl로 재현 불가한 채널(참고용 표시). 브라우저·MCP 경로는 access-tiers.md의 실측 접근표를 손으로 다시 잰다.
 SKIPS = [
-    ("네이버",   "naver",   "NaverSearch MCP 도구 기반. MCP로 별도 확인."),
-    ("유튜브",   "youtube", "yt-dlp/WebSearch 기반. scripts/yt_collect.py로 확인."),
-    ("웹 일반",  "web",     "WebSearch/WebFetch 기반. 범용 채널."),
-    ("페이스북", "facebook", "로그인 벽·브라우저 세션. 수동 확인."),
-    ("쓰레드",   "threads", "로그인 벽·브라우저 세션. 수동 확인."),
-    ("RSS",      "rss",     "대상 피드마다 다름. 개별 확인."),
+    ("네이버",     "naver",     "NaverSearch MCP 전용. 브라우저·WebFetch는 도메인 차단(2026-11-21)."),
+    ("유튜브",     "youtube",   "yt-dlp 기반. scripts/yt_collect.py로 확인."),
+    ("웹 일반",    "web",       "WebSearch/WebFetch 기반. 범용 채널."),
+    ("페이스북",   "facebook",  "WebFetch는 빈 셸. 인앱 브라우저로 수동 확인."),
+    ("쓰레드",     "threads",   "WebFetch 차단. 인앱 브라우저(threads.com)로 수동 확인."),
+    ("링크드인",   "linkedin",  "WebFetch 403. 인앱 브라우저로 수동 확인."),
+    ("인스타그램", "instagram", "WebFetch 공개 프로필. 브라우저로 수동 확인."),
+    ("RSS",        "rss",       "대상 피드마다 다름. 개별 확인."),
 ]
 
 

@@ -1,37 +1,49 @@
-# 채널: 샤오홍슈 (小红书, RED / XiaoHongShu)
+# 채널: 샤오홍슈 (小红书, RED / rednote)
 
 중국 MZ의 라이프스타일·뷰티·소비·여행 후기 본진. 실사용 리뷰와 트렌드가 산다. 다만 **개별 노트는
 접근이 매우 까다롭다.** 노트마다 짧게 만료되는 토큰이 걸려 있고, API는 요청마다 서명을 요구한다.
 이 채널은 "아무 노트 URL이나 열어 캡션을 읽는다"가 잘 안 된다는 전제로 다룬다.
 ([access-tiers.md](access-tiers.md) 참조)
 
+## 접근 현실 (실측 2026-11-21)
+
+**도메인이 `rednote.com`으로 바뀌었다.** `xiaohongshu.com/explore`는 302로 `www.rednote.com/explore`로 넘어간다.
+
+| 경로 | 결과 |
+|---|---|
+| 인앱 브라우저 | `rednote.com/explore`가 열린다 |
+| Claude in Chrome | 열린다 |
+| `WebFetch` (`xiaohongshu.com`) | 다른 호스트로 가는 리다이렉트에서 멈춘다. `rednote.com` 직접 열기는 아직 시험하지 않았다 |
+| curl (`xiaohongshu.com/explore`) | 리다이렉트를 따라가면 200이지만 `rednote.com/login`에 도착한다. 비브라우저 요청에는 피드가 안 열린다 |
+
 ## URL 구조
+
+예전 `xiaohongshu.com` 주소는 리다이렉트로 풀린다. 새로 여는 URL은 `rednote.com`으로 쓴다.
 
 | 대상 | 형식 | 메모 |
 |---|---|---|
-| 노트(게시물) | `xiaohongshu.com/explore/<노트ID>?xsec_token=<토큰>&xsec_source=pc_search` | 현재 표준형 |
+| 트렌드 피드 | `rednote.com/explore` | 공개로 열린다 |
+| 노트(게시물) | `rednote.com/explore/<노트ID>?xsec_token=<토큰>&xsec_source=pc_search` | 토큰 필요(아래) |
 | 노트(구형) | `xiaohongshu.com/discovery/item/<노트ID>` | 아직 보임 |
-| 유저 프로필 | `xiaohongshu.com/user/profile/<유저ID>` | |
-| 트렌드 피드 | `xiaohongshu.com/explore` | 공개로 열린다 |
+| 유저 프로필 | `rednote.com/user/profile/<유저ID>` | |
 | 공유 단축링크 | `xhslink.com/a/<코드>` (구), `xhslink.com/m/<코드>` (2025 신) | 리다이렉트로 풀린다 |
 
-## 토큰 벽의 현실 (직접 확인)
+## 토큰 벽의 현실
 
 **개별 노트 페이지는 신선한 `xsec_token` 없이 열면 404다.** 검색엔진에 색인된 노트 URL을 그대로 열어도
 토큰이 만료돼 대부분 404(`你访问的页面不见了`)가 뜬다. 토큰은 검색·좋아요·수집 API 응답에서 그때그때
 발급되고 세션에 묶여 짧게 산다. 그래서 **색인된 노트 URL은 "발견 신호"일 뿐, 회수 보장이 아니다.**
-**Jina Reader도 도움이 안 된다**(무키 401). 내부 API는 요청마다 `x-s`·`x-t` 서명을 요구해 plain fetch로는
-못 친다.
+내부 API는 요청마다 `x-s`·`x-t` 서명을 요구해 plain fetch로는 못 친다.
 
-## 긁는 순서 (현실 경로)
+## 긁는 순서 (되는 것부터)
 
-1. **웹 검색으로 발견.** `WebSearch`로 `site:xiaohongshu.com [키워드]`(중국어 필수). 어떤 노트·크리에이터가
-   그 주제를 다루는지 방향을 잡는다. 다만 위 이유로 잡힌 노트 URL은 열면 404일 때가 많다.
-2. **트렌드 피드는 무로그인으로 읽힌다.** `xiaohongshu.com/explore`는 `WebFetch`로 열면 인기 노트 타일
-   (제목·크리에이터·미리보기)이 그대로 나온다. "요즘 무엇이 뜨나"를 볼 때 유효하다.
-3. **개별 노트·프로필은 실제 브라우저 세션(정공법).** 특정 노트의 본문·이미지·지표가 필요하면, 사용자
-   허락 하에 이미 로그인된 크롬(claude-in-chrome)으로 연다. 브라우저가 세션 안에서 신선한 토큰을 스스로
-   발급하므로 이 경로라야 안정적으로 읽힌다. **읽기까지만** 한다.
+1. **트렌드 피드는 인앱 브라우저.** `https://www.rednote.com/explore`를 열면 인기 노트 타일(제목·크리에이터·
+   미리보기)이 보인다. "요즘 무엇이 뜨나"를 볼 때 유효하다.
+2. **웹 검색으로 발견.** `WebSearch`로 `site:xiaohongshu.com [키워드]`, `site:rednote.com [키워드]`(중국어 필수).
+   어떤 노트·크리에이터가 그 주제를 다루는지 방향을 잡는다. 잡힌 노트 URL은 열면 404일 때가 많다.
+3. **개별 노트·프로필은 로그인된 크롬.** 특정 노트의 본문·이미지·지표가 필요하면, 사용자 허락 하에 이미
+   로그인된 크롬(claude-in-chrome)으로 연다. 브라우저가 세션 안에서 신선한 토큰을 스스로 발급하므로 이
+   경로라야 안정적으로 읽힌다. **읽기까지만** 한다.
 
 ## 챙길 숫자
 

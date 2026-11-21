@@ -1,10 +1,10 @@
 # Hound 🐕
 
-![Version](https://img.shields.io/badge/version-1.1.1-2ea44f)
+![Version](https://img.shields.io/badge/version-1.2.0-2ea44f)
 ![License](https://img.shields.io/badge/license-MIT-2f81f7)
 ![Claude Code](https://img.shields.io/badge/Claude%20Code-Skill-8A63FF)
 ![Channels](https://img.shields.io/badge/channels-16-e8873a)
-![Zero setup](https://img.shields.io/badge/setup-none-10A37F)
+![Setup](https://img.shields.io/badge/setup-Naver%20MCP%20only-10A37F)
 
 ![Hound](assets/thumbnail.png)
 
@@ -21,18 +21,23 @@ Hound는 한 번 검색해서 나오지 않는 정보를 끝까지 추적하는 
 이런 지점에서 결과가 없다고 답하고 손을 뗍니다. Hound는 바로 그 자리를 위해 만들었습니다. 포기하는
 검색이 아니라 추적하는 검색입니다.
 
-## 설치가 필요 없습니다
+## 설치는 거의 필요 없습니다
 
-기본 검색은 별도 설치나 API 키가 필요 없습니다. 네이버 검색, 웹 검색, 페이지 열람, 브라우저는 이미
-환경에 준비된 도구를 그대로 씁니다. 무설정이라는 점 자체가 Hound의 강점입니다.
+기본 검색은 별도 설치나 API 키가 필요 없습니다. 웹 검색, 페이지 열람, 브라우저는 이미 환경에 준비된
+도구를 그대로 씁니다. 예외는 네이버 하나입니다. 네이버는 브라우저와 페이지 열람 도구가 도메인을 막고
+있어서(2026-11-21 실측), 네이버 검색 MCP를 연결해야 쓸 수 있습니다. 설치 방법은
+[references/naver.md](references/naver.md)에 있습니다. MCP가 없으면 Hound는 구글 뉴스 같은 다른 경로로
+옮겨 가고, 결과에 그렇게 표시합니다.
 
 유튜브 기간별 조회수 순위 집계에는 `yt-dlp`(키 불필요)가 필요하지만, 미리 설치할 필요는 없습니다.
 스크립트가 필요한 순간에 `yt-dlp`를 알아서 설치하고, 유튜브를 쓰지 않으면 설치하지 않습니다. macOS
 기본 파이썬(3.9)의 pip로 설치하면 구버전이 깔려 유튜브 집계가 실패합니다. 그래서 스크립트는 이 환경에서
 `brew`나 3.10 이상 파이썬으로 `yt-dlp`를 설치합니다.
 
-사용자가 직접 준비해야 하는 도구는 두 가지입니다.
+사용자가 직접 준비해야 하는 도구는 세 가지입니다.
 
+- **네이버 검색 MCP.** `@isnow890/naver-search-mcp` 1.1.0 이상과 NAVER API HUB 키가 필요합니다. 네이버
+  블로그, 카페, 뉴스, 지식iN을 직접 검색할 때 씁니다.
 - **Whisper 계열 도구.** 팟캐스트 오디오를 전사할 때 필요합니다. 모델 용량이 커서 스크립트가 자동으로
   설치하지 않으므로, 이 기능을 쓸 때만 직접 설치하면 됩니다.
 - **[Claude in Chrome](https://claude.com/claude-in-chrome) 확장.** 인스타그램 프로필이나 X 타임라인처럼
@@ -168,6 +173,19 @@ hound/                         # 레포 루트
 `output/20260711_01/result.md`와 `result.html`). 같은 날 여러 번 실행하면 순번이 `01`, `02`로 늘어납니다.
 
 ## 버전 히스토리
+
+### v1.2.0 (2026-11-21)
+
+- 16개 채널을 Claude Code 데스크톱에서 다시 실측하고, 각 채널 문서의 사다리를 **되는 경로부터** 다시
+  배열했습니다. 결과는 [access-tiers.md](references/access-tiers.md)의 "실측 접근표"에 한 장으로 모았습니다.
+- 네이버는 브라우저와 페이지 열람 도구가 도메인을 막아, 네이버 검색 MCP 없이는 열리지 않습니다.
+  [naver.md](references/naver.md)에 MCP 설치(NAVER API HUB 키)와 MCP가 없을 때의 대체 경로(구글 뉴스)를
+  적었습니다. 막힌 도메인을 다른 도구로 돌아가 열지 않는다는 규칙도 추가했습니다.
+- 레딧은 크롬 경로도 막혀, 요약·인용 페이지 같은 간접 소스만 남았습니다.
+- 바뀐 현실을 반영했습니다. vxtwitter는 403이라 뺐고 X의 curl oEmbed 경로도 뺐습니다. 쓰레드는
+  threads.com, 샤오홍슈는 rednote.com으로 도메인이 바뀌었습니다. 빌리빌리 메타는 `yt-dlp`를 먼저 씁니다.
+  슈에추와 페이스북, 링크드인은 인앱 브라우저를 먼저 엽니다. Jina Reader는 지금 키 없이도 응답합니다.
+- `verify_access.py`의 기대값을 새 실측에 맞췄습니다.
 
 ### v1.1.1 (2026-11-16)
 
