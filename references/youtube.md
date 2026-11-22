@@ -5,8 +5,11 @@
 
 ## 쓰임 1. 영상 찾기 (특정 주제의 영상 목록)
 
-- `WebSearch`로 `site:youtube.com [키워드]` 검색이 가장 빠르다. 제목·링크를 얻는다.
-- 네이버 `search_blog`/`search_webkr`에도 "유튜브 정리" 글이 많으니 교차로 훑는다.
+- **`yt-dlp` 검색이 가장 정확하다.** `yt-dlp --flat-playlist --print "%(id)s|%(title)s" --playlist-end 10 "ytsearch10:<키워드>"`.
+  2026-11-21 실측에서 영상 ID와 제목이 바로 나왔다.
+- `WebSearch`로 `site:youtube.com [키워드]`도 쓰지만, 2026-11-21 실측에서는 youtube.com 원본보다 요약·정리
+  사이트가 주로 잡혔다. 영상 발견보다 "이 영상을 다룬 글" 찾기에 맞다.
+- 네이버 MCP가 있으면 `search_blog`/`search_webkr`의 "유튜브 정리" 글도 교차로 훑는다.
 
 ## 쓰임 2. 영상 내용 읽기 (자막·설명·댓글)
 
@@ -17,9 +20,13 @@
 
 - **자막 추출:** `yt-dlp --skip-download --write-auto-sub --sub-lang ko,en --sub-format vtt <URL>`
 - **메타·설명·조회수:** `yt-dlp --skip-download --print "%(title)s|%(view_count)s|%(upload_date)s|%(channel)s" <URL>`
-- **스로틀링 회피(중요):** 여러 영상을 연타하면 YouTube가 봇으로 차단한다("The page needs to be
-  reloaded" 에러). 반드시 **`--extractor-args "youtube:player_client=android,ios,tv"`**를 붙이고
-  `--sleep-requests 1`로 간격을 둔다. `web_safari` 단독 클라이언트는 잘 막힌다.
+- **속도를 낮춘다(중요).** 여러 영상을 연달아 부르면 YouTube가 요청을 막는다("The page needs to be
+  reloaded"). `--sleep-requests 1`로 간격을 두고, 한 번에 부르는 영상 수를 줄인다. 클라이언트를 바꿔 가며
+  차단을 피하는 요령(`player_client` 강제)은 쓰지 않는다. 기본 클라이언트 그대로 쓴다.
+- **JS 런타임.** 최근 yt-dlp는 유튜브 추출에 Deno 같은 JS 런타임을 요구한다. JS 런타임 관련 경고나
+  오류가 나면 `brew install deno`로 설치한 뒤 다시 실행한다.
+- **막히면 공식 API.** 많이 불러야 하면 `YOUTUBE_API_KEY`(YouTube Data API v3)를 쓴다. 쓰임 3의 스크립트는
+  키가 있으면 자동으로 API를 쓴다.
 - 자막이 없으면 브라우저로 영상 페이지를 열어 설명란과 transcript 패널을 읽는다([web.md](web.md) 4칸).
 
 ## 쓰임 3. 기간·순위 영상 집계 (예: "최근 한 달 로봇 영상 top 10")
@@ -46,7 +53,8 @@ python3 scripts/yt_render.py --top ./run/top.json --out ./run
   영상이 영원히 밀려난다. `yt_collect.py`는 **검색 URL에 업로드 기간 필터(`sp` 파라미터)를 박아**
   flat 검색 단계부터 기간 내 영상만 모은다. `EgIIBA%3D%3D`=이번 달, `EgIIAw%3D%3D`=이번 주.
 - 그다음 각 영상의 **정확한 timestamp로 `지금 - N일` 창을 다시** 걸어, 느슨한 검색 필터를 코드가 보정한다.
-- android 클라이언트 + 병렬(ThreadPoolExecutor)로 스로틀링을 피하며 메타를 취득한다.
+- 메타는 기본 클라이언트로, 병렬 4개까지만, 요청 간격을 두고 취득한다. 많이 걸리면 `--max-candidates`를
+  줄이거나 `YOUTUBE_API_KEY`로 공식 API를 쓴다. 후보 30개 기준 수 분이 걸릴 수 있으니 사용자에게 미리 알린다.
 
 주요 옵션(자세한 근거는 [youtube-ranking-notes.md](youtube-ranking-notes.md)):
 

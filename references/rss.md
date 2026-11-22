@@ -1,13 +1,15 @@
 # 채널: RSS / Atom 피드
 
 블로그·뉴스·릴리스·팟캐스트의 원천 피드. 무설정, 무키. 특정 사이트의 새 글을 시간순으로 훑을 때 최고다.
+2026-11-21에는 `hnrss.org/frontpage` 한 곳으로 `WebFetch`가 되는 것을 확인했다. 피드마다 따로 확인한다.
 ([access-tiers.md](access-tiers.md) 참조)
 
 ## 긁는 순서
 
 1. **피드 URL 찾기.** 흔한 경로를 시도한다: `사이트/rss`, `사이트/feed`, `사이트/atom.xml`,
-   `사이트/index.xml`, `사이트/rss.xml`. 블로그 플랫폼(티스토리 `/rss`, 워드프레스 `/feed`, 네이버블로그
-   `rss.blog.naver.com/아이디.xml`)은 규칙적이다.
+   `사이트/index.xml`, `사이트/rss.xml`. 블로그 플랫폼(티스토리 `/rss`, 워드프레스 `/feed`)은 규칙적이다.
+   네이버 블로그 RSS(`rss.blog.naver.com`)는 네이버 도메인이라 도구가 막는다(2026-11-21). 열지 않고
+   [naver.md](naver.md)를 따른다.
 2. **피드 파싱.** `WebFetch`로 피드 XML을 열어 항목(제목·링크·날짜·요약)을 읽는다. 대량·정밀 파싱이
    필요하면 `python3 -c "import feedparser; ..."`(`pip install feedparser`).
 3. **본문.** 피드 요약이 짧으면 각 항목 링크를 [access-tiers.md](access-tiers.md)의 본문 추출 사다리로 연다.

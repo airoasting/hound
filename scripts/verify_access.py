@@ -21,6 +21,8 @@ import json
 import subprocess
 import sys
 
+# 문서가 적은 접근 결과를 같은 조건으로 재현하려고 일반 브라우저 UA를 쓴다. 차단을 피하려는 용도가 아니다.
+# 도구가 막은 도메인(네이버, 레딧)은 이 스크립트에서도 부르지 않는다.
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36"
 TIMEOUT = 20
 
@@ -54,14 +56,6 @@ def chk_jina():
         return None, "요청 실패"
     # 문서 주장(2026-11-21): 키 없이도 200. 401로 돌아가면 문서를 다시 '키 필요'로 고친다.
     return st == 200, f"무키 상태 status={st} (기대 200)"
-
-
-def chk_reddit():
-    st, _ = curl("https://www.reddit.com/r/LocalLLaMA/hot.json?limit=2")
-    if st == 0:
-        return None, "요청 실패"
-    # 문서 주장: 비로그인 .json은 막혔다(403/429). 200이면 오히려 문서가 낡은 것.
-    return st in (403, 429), f".json status={st} (기대 403/429=차단)"
 
 
 def chk_v2ex():
@@ -161,7 +155,6 @@ def chk_bilibili_danmaku():
 
 CHECKS = [
     ("Jina Reader 무키 200",        "access-tiers, linkedin, instagram", chk_jina),
-    ("Reddit .json 차단",           "reddit",                            chk_reddit),
     ("V2EX 공개 API",               "v2ex",                              chk_v2ex),
     ("GitHub REST API",             "github",                            chk_github),
     ("샤오위저우 SSR+og:audio",     "xiaoyuzhou",                        chk_xiaoyuzhou),
@@ -176,6 +169,7 @@ CHECKS = [
 # curl로 재현 불가한 채널(참고용 표시). 브라우저·MCP 경로는 access-tiers.md의 실측 접근표를 손으로 다시 잰다.
 SKIPS = [
     ("네이버",     "naver",     "NaverSearch MCP 전용. 브라우저·WebFetch는 도메인 차단(2026-11-21)."),
+    ("레딧",       "reddit",    "도구가 도메인을 막는다. curl로도 열지 않는다(간접 소스만)."),
     ("유튜브",     "youtube",   "yt-dlp 기반. scripts/yt_collect.py로 확인."),
     ("웹 일반",    "web",       "WebSearch/WebFetch 기반. 범용 채널."),
     ("페이스북",   "facebook",  "WebFetch는 빈 셸. 인앱 브라우저로 수동 확인."),
@@ -207,7 +201,8 @@ def main():
             errors += 1
         print(f"[{tag}] {name:<24} | {detail}")
         if ok is False:
-            print(f"         └─ 드리프트: references/{guards}.md 재검증 필요")
+            docs = ", ".join(f"references/{g.strip()}.md" for g in guards.split(","))
+            print(f"         └─ 드리프트: {docs} 재검증 필요")
 
     print("-" * 68)
     for name, doc, note in SKIPS:

@@ -11,7 +11,8 @@
 | `yt-dlp -J` | 됨. 제목·업로더·게시일·조회·좋아요·댓글 수가 온다. `cid`는 오지 않는다 |
 | 탄막 XML (`comment.bilibili.com/<cid>.xml`) | 됨 |
 | `view` API (`api.bilibili.com/x/web-interface/view`) | curl에서 **412**. 문서가 예전에 적은 "무로그인 `code:0`"과 다르다. `WebFetch`로는 아직 시험하지 않았다 |
-| 인앱 브라우저·Claude in Chrome | 홈이 열린다 |
+| 인앱 브라우저 | **영상 페이지에서 `cid`와 전체 통계를 읽을 수 있다**(2026-11-22, `BV1xx411c7mD`: cid 62131, 조회·탄막·코인·즐겨찾기) |
+| Claude in Chrome | 홈이 열린다(제목만 확인) |
 | `WebSearch` | bilibili.com에 닿는다. 스니펫에 조회수·좋아요가 실릴 때가 많다 |
 
 - **영상 페이지 `WebFetch`는 JS 셸이다.** 제목·설명·통계가 HTML에 없다. 메타데이터는 페이지 스크랩이
@@ -20,18 +21,25 @@
 
 ## 긁는 순서 (되는 것부터)
 
-1. **디스커버리.** `WebSearch`로 `site:bilibili.com [중국어 키워드]`. 영상 URL(`/video/BV...`)에서 **BVID**와
-   스니펫 지표를 얻는다.
+1. **디스커버리.** `WebSearch`에 `allowed_domains: ["bilibili.com"]`을 주고 중국어 키워드로 검색한다.
+   2026-11-22 검토에서 `site:bilibili.com`은 엉뚱한 결과가 섞였고, `allowed_domains`로 바꾸니 영상 URL이
+   잡혔다. 영상 URL(`/video/BV...`)에서 **BVID**와 스니펫 지표를 얻는다.
 2. **영상 정보·통계: `yt-dlp`.** 
    ```bash
    yt-dlp --ies default,-generic -J --skip-download "https://www.bilibili.com/video/<BVID>"
    ```
    JSON에서 `title`, `uploader`, `upload_date`, `view_count`, `like_count`, `comment_count`를 회수한다.
    코인·즐겨찾기·탄막 수와 `cid`는 여기에 없다.
-3. **`cid`와 전체 통계가 필요하면 `view` API.** `WebFetch`로
-   `https://api.bilibili.com/x/web-interface/view?bvid=<BVID>`. `code:0`이면 코인·즐겨찾기·탄막·공유 수와
-   **`cid`**가 온다. 412가 나면 다시 시도하지 않는다. 그때는 탄막·자막 없이 2번 숫자로 마무리하거나,
-   검색 스니펫과 다른 채널로 보강한다.
+3. **`cid`와 전체 통계가 필요하면 인앱 브라우저.** 영상 페이지 `https://www.bilibili.com/video/<BVID>`를
+   열고 몇 초 기다린 뒤, 페이지가 이미 가진 데이터를 읽는다.
+   ```js
+   (() => { const v = (window.__INITIAL_STATE__ || {}).videoData || {};
+            return [v.bvid, v.cid, v.stat && {view: v.stat.view, danmaku: v.stat.danmaku,
+                    coin: v.stat.coin, fav: v.stat.favorite}]; })()
+   ```
+   페이지에 그려진 값을 읽기만 하는 것이고, 별도 요청을 만들지 않는다. 인앱 브라우저가 없으면 `WebFetch`로
+   `https://api.bilibili.com/x/web-interface/view?bvid=<BVID>`를 한 번 시도한다. 412가 나면 다시 시도하지 않고,
+   탄막·자막 없이 2번 숫자로 마무리한다.
 4. **자막(cid가 있을 때).** `WebFetch`로 `https://api.bilibili.com/x/player/v2?bvid=<BVID>&cid=<cid>`를 열어
    `data.subtitle.subtitles[]`의 `.json` 자막 URL을 fetch한다. 배열이 비면 무로그인 자막이 없는 것이다.
    **AI 생성 자막은 로그인(SESSDATA)이 필요**하니, 비어 있으면 지어내지 말고 5번(탄막)으로 대체한다.
@@ -46,7 +54,7 @@
 
 ## 챙길 숫자
 
-`yt-dlp`에서 조회수·좋아요·댓글 수를, `view` API가 열리면 탄막 수·코인·즐겨찾기·공유까지 회수한다.
+`yt-dlp`에서 조회수·좋아요·댓글 수를, 3번(인앱 브라우저나 `view` API)에서 탄막 수·코인·즐겨찾기까지 회수한다.
 화제성은 조회수와 탄막 수를 겹쳐 가늠한다. 확인하지 못한 숫자는 비워 둔다.
 
 ## 요령 · 가드레일

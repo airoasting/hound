@@ -37,6 +37,15 @@
   a{color:var(--gold);text-decoration:none}
   a:hover{text-decoration:underline}
   .note{color:var(--muted);font-size:14px}
+  .badges{margin:0 0 18px;display:flex;flex-wrap:wrap;gap:8px}
+  .badge{display:inline-block;font-size:13px;font-weight:600;padding:3px 10px;border-radius:999px;
+    border:1px solid var(--line);background:var(--card);color:var(--text)}
+  .badge.warn{border-color:var(--gold);color:var(--accent)}
+  .route{display:inline-block;font-size:12px;color:var(--muted);border:1px solid var(--line);
+    border-radius:6px;padding:0 6px;margin-left:6px}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--muted);font-weight:600}
   footer{max-width:820px;margin:48px auto 0;padding:20px 24px 0;
     border-top:1px solid var(--line);color:var(--muted);font-size:13px}
   @media (prefers-color-scheme: dark){

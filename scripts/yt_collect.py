@@ -209,24 +209,25 @@ def yt_flat_search(query, days, per_query, ytcmd):
 
 
 def yt_full_meta(vid, ytcmd):
-    """단일 영상 full 메타데이터. android 클라이언트가 쓰로틀링에 강함."""
+    """단일 영상 full 메타데이터. 기본 클라이언트로 한 번만 부른다.
+
+    예전에는 player_client(android, web_safari, tv)를 바꿔 가며 다시 불렀다. 차단을 피하려는 요령이라
+    뺐다(hound 1.3.0). 실패하면 그 영상은 건너뛰고, 많이 막히면 YOUTUBE_API_KEY로 공식 API를 쓴다.
+    """
     url = f"https://www.youtube.com/watch?v={vid}"
-    for client in ("android", "web_safari", "tv"):
-        cmd = ytcmd + ["--dump-json", "--no-warnings",
-                       "--extractor-args", f"youtube:player_client={client}", url]
-        try:
-            r = subprocess.run(cmd, capture_output=True, text=True, timeout=90)
-        except subprocess.TimeoutExpired:
-            continue
-        out = r.stdout.strip()
-        if not out:
-            continue
-        try:
-            d = json.loads(out)
-        except json.JSONDecodeError:
-            continue
-        return normalize(d, vid)
-    return None
+    cmd = ytcmd + ["--dump-json", "--no-warnings", "--skip-download", "--sleep-requests", "1", url]
+    try:
+        r = subprocess.run(cmd, capture_output=True, text=True, timeout=90)
+    except subprocess.TimeoutExpired:
+        return None
+    out = r.stdout.strip()
+    if not out:
+        return None
+    try:
+        d = json.loads(out)
+    except json.JSONDecodeError:
+        return None
+    return normalize(d, vid)
 
 
 def normalize(d, vid):

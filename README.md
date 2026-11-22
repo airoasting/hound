@@ -1,10 +1,10 @@
 # Hound 🐕
 
-![Version](https://img.shields.io/badge/version-1.2.0-2ea44f)
+![Version](https://img.shields.io/badge/version-1.3.0-2ea44f)
 ![License](https://img.shields.io/badge/license-MIT-2f81f7)
 ![Claude Code](https://img.shields.io/badge/Claude%20Code-Skill-8A63FF)
 ![Channels](https://img.shields.io/badge/channels-16-e8873a)
-![Setup](https://img.shields.io/badge/setup-Naver%20MCP%20only-10A37F)
+![Setup](https://img.shields.io/badge/setup-minimal-10A37F)
 
 ![Hound](assets/thumbnail.png)
 
@@ -78,7 +78,7 @@ Hound는 하나의 거대한 도구가 아니라 추적을 지휘하는 라우�
 | **샤오위저우** | 팟캐스트와 오디오를 전사해 읽기 | [xiaoyuzhou.md](references/xiaoyuzhou.md) |
 | **웹 일반** | 사실, 문서, 해외 정보, 페이지 본문 | [web.md](references/web.md) |
 
-Hound는 로그인 벽이 있는 채널(X, 인스타그램, 페이스북, 레딧, 샤오홍슈 등)을 사용자가 허락한 경우에만
+Hound는 로그인 벽이 있는 채널(X, 인스타그램, 페이스북, 샤오홍슈 등)을 사용자가 허락한 경우에만
 읽고, 게시나 수정은 하지 않습니다. Hound는 이런 자료를 두 단계로 읽습니다. 먼저 `yt-dlp`가 그 URL을 지원하는지 확인하고, 지원하면
 `yt-dlp`로 읽습니다. 이때 처음에는 쿠키 없이 시도하고, 로그인이 필요하다는 오류가 날 때만 크롬에
 저장된 로그인 쿠키를 씁니다. `yt-dlp`가 그 URL을 지원하지 않거나 읽기에 실패하면, Claude가 이미
@@ -173,6 +173,24 @@ hound/                         # 레포 루트
 `output/20260711_01/result.md`와 `result.html`). 같은 날 여러 번 실행하면 순번이 `01`, `02`로 늘어납니다.
 
 ## 버전 히스토리
+
+### v1.3.0 (2026-11-22)
+
+4인 다관점 검토(근거·전문가·사용자·실제 장면)와 GitHub 비교 조사에서 나온 개선 중 두 묶음을 반영했습니다.
+
+- **결과에 경로를 남깁니다.** `save_result.py`가 항목마다 채널·경로·확인 시점을 받고, 채널별 상태(결과 있음,
+  0건, 막힘, 건너뜀)를 표로 적습니다. 대체·간접 경로가 섞이면 "원본 아님" 배지를 답니다. 네이버 MCP가 없을
+  때 구글 뉴스 결과가 네이버 원본처럼 보이던 문제를 막습니다.
+- **근거 최저선을 둡니다.** 서로 다른 채널 두 곳 이상에서 확인될 때만 "찾음"이고, 그 아래는 "부분 발견"입니다.
+- **같은 자료를 합칩니다.** 추적 파라미터나 `www.`·`m.`만 다른 URL은 한 항목으로 묶고, `http(s)` 주소만 링크로
+  만듭니다.
+- **자기 규칙과 어긋나던 단계를 뺐습니다.** 레딧 `.json` 시도와 미러 열람, 네이버 블로그 RSS 예시, 링크드인
+  Jina 경유, `verify_access.py`의 레딧 호출, 유튜브의 `player_client` 강제(문서와 `yt_collect.py`)입니다.
+- **실측 접근표를 두 단계로 나눴습니다.** "본문"(텍스트까지 확인)과 "열림"(제목만 확인)을 구분하고, 인앱
+  브라우저로 쓰레드·페이스북·링크드인·인스타그램·샤오홍슈·X·구글 뉴스 본문을 다시 쟀습니다. 빌리빌리는 인앱
+  브라우저로 `cid`와 전체 통계를 읽는 경로를 찾아 탄막·자막 경로가 다시 열렸습니다.
+- 인앱 브라우저가 없는 환경(CLI, Codex)의 대체 경로, 공개 직무 이력과 사적 정보의 경계, 라우터의 조건부
+  채널 표시를 추가했습니다.
 
 ### v1.2.0 (2026-11-21)
 

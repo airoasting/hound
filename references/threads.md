@@ -7,8 +7,8 @@ Meta 계열이라 로그인 벽이 있다. 공개 게시물만 쫓는다. ([acce
 
 | 경로 | 결과 |
 |---|---|
-| 인앱 브라우저 | 공개 프로필이 열린다. `threads.net`은 `threads.com`으로 리다이렉트된다 |
-| Claude in Chrome | 열린다 |
+| 인앱 브라우저 | **본문 확인(11-22).** 로그인 없이 공개 프로필의 소개, 팔로워 수, 최근 게시물과 반응 수가 보였다. `threads.net`은 `threads.com`으로 리다이렉트된다 |
+| Claude in Chrome | 열림(제목만 확인) |
 | `WebFetch` | "unable to fetch from www.threads.net" |
 | `WebSearch` | `site:threads.net` 결과 0건. 쓰레드를 다룬 블로그 글만 잡혔다 |
 

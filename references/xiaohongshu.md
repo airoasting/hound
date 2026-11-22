@@ -11,8 +11,8 @@
 
 | 경로 | 결과 |
 |---|---|
-| 인앱 브라우저 | `rednote.com/explore`가 열린다 |
-| Claude in Chrome | 열린다 |
+| 인앱 브라우저 | **본문 확인(11-22).** `rednote.com/explore`에서 추천 노트 타일의 제목·작성자·좋아요 수가 보였다 |
+| Claude in Chrome | 열림(제목만 확인) |
 | `WebFetch` (`xiaohongshu.com`) | 다른 호스트로 가는 리다이렉트에서 멈춘다. `rednote.com` 직접 열기는 아직 시험하지 않았다 |
 | curl (`xiaohongshu.com/explore`) | 리다이렉트를 따라가면 200이지만 `rednote.com/login`에 도착한다. 비브라우저 요청에는 피드가 안 열린다 |
 
